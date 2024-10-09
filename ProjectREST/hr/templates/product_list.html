@@ -1,0 +1,237 @@
+ <!DOCTYPE html>
+
+  {% load static %}
+  {% load crispy_forms_tags %}
+
+  <html lang="en">
+
+
+  <head>
+
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <meta name="language" content="English">
+
+    <meta name="author" content="vinayak sharma">
+
+
+    <title>{{title}}</title>
+
+
+
+    <!-- bootstrap file -->
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- bootstrap file-->
+
+
+    <!-- jQuery -->
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+
+    <!-- main css -->
+
+      <link rel="stylesheet" type="text/css" href='{% static "index.css" %}' />
+
+    <!-- message here -->
+
+
+    {% if messages %}
+
+    {% for message in messages %}
+
+
+    <script>
+
+      alert("{{ message }}");
+
+    </script>
+
+
+    {% endfor %}
+
+    {% endif %}
+
+
+    <!--_______________________________________________-->
+
+
+<script>
+   $(document).ready(function() {
+      $(".add-to-favorites").on("click", function() {
+         var productName = $(this).data("product-name");
+         window.location.href = "{% url 'wishlist' %}?product_name=" + productName;
+      });
+   });
+</script>
+
+ <script>
+    $(document).ready(function() {
+        $(".add-to-cart").on("click", function() {
+            var productName = $(this).data("product-name");
+            var productPrice = $(this).data("product-price");
+            addToCart(productName, productPrice);
+        });
+    });
+
+    function addToCart(productName, productPrice) {
+        // Trimite o cerere AJAX pentru a adăuga produsul în coșul de cumpărături
+        $.ajax({
+            type: 'POST',
+            url: '/add_to_cart/',
+            data: {'product_name': productName, 'product_price': productPrice, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function(data) {
+                alert("Produsul a fost adăugat în coșul de cumpărături!");
+            },
+            error: function(xhr, status, error) {
+                console.error("Eroare la adăugarea în coș:", error);
+            }
+        });
+    }
+</script> 
+
+  </head>
+
+
+  <body class="container-fluid">
+
+
+
+    <header class="row">
+
+
+      <!-- navbar-->
+
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+
+        <div class="container-fluid">
+
+          <div class="navbar-header">
+
+            <button class="navbar-toggle" data-toggle="collapse" data-target="#mainNavBar">
+
+              <span class="icon-bar"></span>
+
+              <span class="icon-bar"></span>
+
+              <span class="icon-bar"></span>
+
+              <span class="icon-bar"></span>
+
+            </button>
+
+          </div>
+          <div class="collapse navbar-collapse" id="mainNavBar">
+
+
+            <button class="btn btn-default navbar-btn custom-btn" type="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">Categorii <span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                     <li><a href='{% url "laptopuri" %}'>Laptopuri</a></li>
+                     <li><a href='{% url "telefoane" %}'>Telefoane</a></li>
+                      <li><a href='{% url "console" %}'>Console</a></li>
+                  </ul>
+
+              <div class="navbar-form navbar-right">
+                    <form method="GET" action="{% url 'wishlist' %}">
+                        <button type="submit" class="btn btn-default add-to-cart">
+                                Favorite
+                        </button>
+                    </form>
+              </div>
+
+              <div class="navbar-form navbar-right">
+                    <form method="GET" action="{% url 'cart_view' %}">
+                        <button type="submit" class="btn btn-default add-to-cart">
+                                Cumparaturi
+                        </button>
+                    </form>
+              </div>
+
+              <div class="navbar-form navbar-right">
+                    <form method="GET" action="{% url 'history' %}">
+                        <button type="submit" class="btn btn-default add-to-cart">
+                                Istoric Comenzi
+                        </button>
+                    </form>
+              </div>
+
+            <ul class="nav navbar-nav navbar-right">
+
+              <li><a href='{% url "index" %}'>Home</a></li>
+
+              <li><a href='{% url "user_profile" %}'>Profile</a></li>
+
+              {% if user.is_authenticated %}
+
+              <li><a href='{% url "logout" %}'><span class="glyphicon glyphicon-log-out"></span>   Logout</a></li>
+
+              {% else %}
+
+              <li><a href='{% url "register" %}'><span class="glyphicon glyphicon-user"></span>   Sign up</a></li>
+
+              <li><a href='{% url "login" %}'><span class="glyphicon glyphicon-log-in"></span>   Log in</a></li>
+
+              {% endif %}
+
+
+            </ul>
+
+          </div>
+
+        </div>
+
+      </nav>
+
+    </header>
+
+    <br/>
+
+    <br>
+
+    <br>
+
+  </body>
+
+  <form method="POST" action="">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <button type="submit">Filtrează</button>
+</form>
+
+
+{% for product in products %}
+    <div class="product">
+        <img src="{{ product.image }}" alt="{{ product.name }}">
+        <h2>{{ product.name }}</h2>
+      <button class="btn btn-default add-to-favorites" data-product-name="{{ product.name }}">
+         Adaugă la favorite
+      </button>
+      <form method="POST" action = "{% url 'add_to_cart' product.id %}">
+          {% csrf_token %}
+       <button name  = "cos" class="btn btn-success add-to-cart" data-product-name="{{ product.name }}">
+           Adaugă în coș
+       </button>
+       </form>
+    </div>
+
+
+{% endfor %}
+
+
+
+  </html>

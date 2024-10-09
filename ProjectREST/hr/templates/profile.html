@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+
+    <form id="profileForm">
+
+        <label for="FirstName">First Name:</label>
+        <input type="text" id="FirstName" name="FirstName" required>
+
+        <label for="LastName">Last Name:</label>
+        <input type="text" id="LastName" name="LastName" required>
+
+        <label for="Age">Age:</label>
+        <input type="number" id="Age" name="Age" required>
+
+        <label for="DateofBirth">Date of Birth:</label>
+        <input type="date" id="DateofBirth" name="DateofBirth" required>
+
+        <label for="Email">Email:</label>
+        <input type="email" id="Email" name="Email" required>
+
+        <label for="PhoneNumber">Phone Number:</label>
+        <input type="tel" id="PhoneNumber" name="PhoneNumber" pattern="[0-9]{10}" placeholder="Format: 07********" required>
+
+        <label for="Address">Address:</label>
+        <textarea id="Address" name="Address" rows="4" required></textarea>
+
+        <button type="submit">Save Profile</button>
+    </form>
+
+    <script>
+        document.getElementById('profileForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const profileData = {};
+
+            formData.forEach((value, key) => {
+                profileData[key] = value;
+            });
+
+            localStorage.setItem('profileData', JSON.stringify(profileData));
+
+            window.location.href = `/user_profile/`;
+        });
+    </script>
+
+</body>
+
+</html>
