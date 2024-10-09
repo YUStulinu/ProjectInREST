@@ -1,2 +1,2 @@
 # ProjectInREST
-Project made in REST
+Project made in REST/Python
